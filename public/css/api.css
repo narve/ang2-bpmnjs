@@ -1,0 +1,54 @@
+﻿
+.actions form label {
+    display: block;
+    /*outline: 2px solid red;*/
+}
+
+body {
+    max-width: 1024px; 
+    margin-right: auto;
+}
+
+header input {
+    float: left;
+    margin-right: 10px; 
+}
+
+
+div {
+    clear: both;
+}
+
+form {
+    max-width: 600px;
+    /*margin-top: 20px;*/
+    /*border-bottom: 1px dotted black;*/
+}
+
+form[method=POST] input[type=submit] {
+    border: 2px solid red; 
+}
+
+header form {
+    display: block; 
+    margin-bottom: 0;
+}
+
+header a {
+    float: left;
+    padding-right: 2em;
+}
+
+header input {
+    font-size: x-small;
+    background-color: lightblue;
+    /*border: 1px solid yellow;*/
+}
+
+input[disabled], input.disabled {
+    text-decoration: line-through;
+}
+
+div.header h2 {
+    text-transform: capitalize
+}

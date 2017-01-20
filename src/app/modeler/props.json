@@ -1,0 +1,63 @@
+{
+  "name": "CustomCompany",
+  "prefix": "ext",
+  "uri": "http://custom.example.com/bpmn/2016",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "ExtSendTask",
+      "extends": [
+        "bpmn:SendTask"
+      ],
+      "properties": [
+        {
+          "name": "template",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtUserTask",
+      "extends": [
+        "bpmn:UserTask"
+      ],
+      "properties": [
+        {
+          "name": "worklist",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtGW",
+      "extends": [
+        "bpmn:ExclusiveGateway"
+      ],
+      "properties": [
+        {
+          "name": "condition",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtSubProcess",
+      "extends": [
+        "bpmn:SubProcess"
+      ],
+      "properties": [
+        {
+          "name": "ReferencedProcessDefinition",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

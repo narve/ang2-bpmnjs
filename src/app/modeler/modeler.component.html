@@ -1,0 +1,16 @@
+<h1>Modeler / editor</h1>
+
+<select [(ngModel)]="url" >
+    <option *ngFor="let url of urls" value="{{url.href}}">{{url.text}}</option>
+</select>
+
+<button (click)="loadBPMN()">Load BPMN-XML</button>
+
+
+<div id="js-drop-zone" class="with-diagram modeler">
+
+    <div id="js-canvas"             class="canvas .section-to-print" ></div>
+    <div id="js-properties-panel"   class="properties"></div>
+
+</div>
+
