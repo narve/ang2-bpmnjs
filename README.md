@@ -43,7 +43,7 @@ https://forum.bpmn.io/t/bpmn-js-with-angular2-and-webpack/1291
 Misc todo's, suggestions welcome:  
 ---
 
-- Coordination/integration between Angular-components and the BPMN.IO /providers/ seems to be difficult. How should one implement (e.g.) /save/ functionality? 
+- Coordination/integration between Angular-components and the BPMN.IO _providers_ seems to be difficult. How should one implement (e.g.) _save_ functionality? 
 
 - Improve development tools. Stacktrace in browser doesn't match typescript files. 
 it is not possible to debug from IntelliJ. Any ideas?  
