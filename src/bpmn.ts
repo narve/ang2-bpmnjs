@@ -1,6 +1,6 @@
 import '../public/diagrams/pizza-collaboration.bpmn';
 
-import 'bpmn-js/lib/modeler';
+import 'bpmn-js/lib/Modeler';
 
 import 'bpmn-js-properties-panel';
 import 'bpmn-js-properties-panel/lib/PropertiesActivator.js';
