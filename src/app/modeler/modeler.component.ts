@@ -5,15 +5,11 @@ import {PaletteProvider} from './palette';
 import {CustomPropertiesProvider} from './props-provider';
 import {BPMNStore, Link} from "../bpmn-store/bpmn-store.service";
 
-const modeler = require("bpmn-js/lib/modeler.js");
+const modeler = require("bpmn-js/lib/Modeler.js");
 const propertiesPanelModule = require('bpmn-js-properties-panel');
 const propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/bpmn');
 
-// const customModdleDescriptor = require('./props.json');
-
 import {CustomModdle} from './custom-moddle';
-
-
 
 const customPaletteModule = {
     paletteProvider: ['type', PaletteProvider]
@@ -33,8 +29,6 @@ const propsPanelRef = '#js-properties-panel';
 })
 export class ModelerComponent implements OnInit {
     modeler: any;
-    // bpmnURL: string = "/diagrams/pizza-collaboration.bpmn";
-    // bpmnURL: string = "http://localhost/pv/api/ProcDef/9/xml";
 
     private url:string;
     private _urls: Link[];
@@ -68,13 +62,7 @@ export class ModelerComponent implements OnInit {
         });
 
         this.store.listDiagrams()
-            .map( links => links.map( link => this.procDefToLink(link)))
             .subscribe( links => this.urls = links);
-    }
-
-    procDefToLink( procDef: any): Link {
-        let s = "the procdef: " + procDef;
-        return new Link( `/pv/api/ProcDef/${procDef.id}/xml`, `#${procDef.id} ${procDef.name}`);
     }
 
     loadBPMN() {
