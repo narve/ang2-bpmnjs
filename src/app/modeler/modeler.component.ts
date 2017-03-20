@@ -63,11 +63,14 @@ export class ModelerComponent implements OnInit {
 
         this.store.listDiagrams()
             .subscribe( links => this.urls = links);
+
+        // Start with an empty diagram:
+        this.url = this.store.startUpUrl;
+        this.loadBPMN();
     }
 
     loadBPMN() {
         console.log( 'load', this.url, this.store );
-        this.store.listDiagrams();
         var canvas = this.modeler.get('canvas');
         this.http.get(this.url)
             .toPromise()

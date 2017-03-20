@@ -13,6 +13,7 @@ export class Link {
 
 @Injectable()
 export class BPMNStore {
+    public startUpUrl = "/diagrams/initial.bpmn";
     private api:any;
 
     public links: Link[] = [];
@@ -22,7 +23,10 @@ export class BPMNStore {
 
     listDiagrams(): Observable<Link[]> {
         console.log( 'listDiagrams', this);
-        return Observable.of([ new Link("/diagrams/pizza-collaboration.bpmn")]);
+        return Observable.of([
+            new Link(this.startUpUrl),
+            new Link("/diagrams/pizza-collaboration.bpmn"),
+        ]);
     }
 
 }

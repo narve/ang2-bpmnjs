@@ -1,4 +1,5 @@
 import '../public/diagrams/pizza-collaboration.bpmn';
+import '../public/diagrams/initial.bpmn';
 
 import 'bpmn-js/lib/Modeler';
 
