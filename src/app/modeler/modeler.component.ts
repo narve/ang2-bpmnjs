@@ -10,13 +10,14 @@ const propertiesPanelModule = require('bpmn-js-properties-panel');
 const propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/bpmn');
 
 import {CustomModdle} from './custom-moddle';
+import {Observable} from "rxjs";
 
 const customPaletteModule = {
     paletteProvider: ['type', PaletteProvider]
 };
 const customPropertiesProviderModule = {
-    __init__: [ 'propertiesProvider' ],
-    propertiesProvider: [ 'type', CustomPropertiesProvider ]
+    __init__: ['propertiesProvider'],
+    propertiesProvider: ['type', CustomPropertiesProvider]
 };
 
 const containerRef = '#js-canvas';
@@ -30,14 +31,17 @@ const propsPanelRef = '#js-properties-panel';
 export class ModelerComponent implements OnInit {
     modeler: any;
 
-    private url:string;
-    private _urls: Link[];
+    url: string;
+    _urls: Link[];
+    extraPaletteEntries: any;
+
     constructor(private http: Http, private store: BPMNStore) {
     }
 
     get urls(): Link[] {
         return this._urls;
     }
+
     set urls(u: Link[]) {
         console.log("urls: ", u);
         this._urls = u;
@@ -45,39 +49,47 @@ export class ModelerComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.store.listDiagrams()
+            .do(links => this.urls = links)
+            .do(() => console.log('Got links: ', this.urls))
+            .flatMap(() => this.store.paletteEntries())
+            .do(entries => this.extraPaletteEntries = entries)
+            .do(() => console.log('Got entries: ', this.extraPaletteEntries))
+            .subscribe(() => this.createModeler());
+    }
+
+    createModeler() {
+        console.log('Creating modeler, injecting extraPaletteEntries: ', this.extraPaletteEntries);
         this.modeler = new modeler({
+            container: containerRef,
+            propertiesPanel: {
+                parent: propsPanelRef
+            },
             additionalModules: [
+                {'extraPaletteEntries': ['type', () => this.extraPaletteEntries]},
                 propertiesPanelModule,
                 propertiesProviderModule,
                 customPropertiesProviderModule,
-                customPaletteModule
+                customPaletteModule,
             ],
             moddleExtensions: {
                 ne: CustomModdle
             },
-            container: containerRef,
-            propertiesPanel: {
-                parent: propsPanelRef
-            }
         });
 
-        this.store.listDiagrams()
-            .subscribe( links => this.urls = links);
-
         // Start with an empty diagram:
-        this.url = this.store.startUpUrl;
+        this.url = this.urls[0].href;
         this.loadBPMN();
     }
 
     loadBPMN() {
-        console.log( 'load', this.url, this.store );
+        console.log('load', this.url, this.store);
         var canvas = this.modeler.get('canvas');
         this.http.get(this.url)
-            .toPromise()
-            .then(response => response.text())
-            .then(data => this.modeler.importXML(data, this.handleError))
-            .then( x => x ? this.handleError(x) : this.postLoad() )
-            .catch(this.handleError);
+            .map(response => response.text())
+            .map(data => this.modeler.importXML(data, this.handleError))
+            .subscribe(x => x ? this.handleError(x) : this.postLoad())
+        ;
     }
 
     postLoad() {
@@ -86,7 +98,8 @@ export class ModelerComponent implements OnInit {
     }
 
     handleError(err: any) {
-        console.log('error rendering', err);
+        if (err)
+            console.log('error rendering', err);
     }
 
 }

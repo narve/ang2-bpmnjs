@@ -3,8 +3,7 @@ import {Http, Headers} from "@angular/http";
 import {Observable} from "rxjs";
 
 export class Link {
-    constructor (public readonly href: string, public readonly text?:string, public readonly rel?:string, )
-    {
+    constructor(public readonly href: string, public readonly text?: string, public readonly rel?: string,) {
         this.text = text || href;
         this.rel = rel || "none";
     }
@@ -13,20 +12,31 @@ export class Link {
 
 @Injectable()
 export class BPMNStore {
-    public startUpUrl = "/diagrams/initial.bpmn";
-    private api:any;
 
-    public links: Link[] = [];
-
-    constructor (private http: Http) {
+    constructor(private http: Http) {
     }
 
     listDiagrams(): Observable<Link[]> {
-        console.log( 'listDiagrams', this);
+        console.log('listDiagrams');
+
+        // This could be async and coming from a server:
         return Observable.of([
-            new Link(this.startUpUrl),
-            new Link("/diagrams/pizza-collaboration.bpmn"),
-        ]);
+            new Link("/diagrams/initial.bpmn"),
+            new Link("/diagrams/pizza-collaboration.bpmn")
+        ]).delay(2000);
     }
 
+    paletteEntries(): Observable<any> {
+        // This could be async and coming from a server:
+        return Observable.of({
+            'extra': {
+                group: 'storage',
+                className: ['fa-coffee', 'fa'],
+                title: 'EXTRA',
+                action: {
+                    click: () => console.log('EXTRA')
+                }
+            }
+        }).delay(1000);
+    }
 }

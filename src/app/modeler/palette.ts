@@ -1,15 +1,13 @@
-export function PaletteProvider(palette: any, create: any, elementFactory: any, spaceTool: any, lassoTool: any) {
+export function PaletteProvider(palette: any, create: any, elementFactory: any, spaceTool: any, lassoTool: any, extraPaletteEntries: any) {
     this._create = create;
     this._elementFactory = elementFactory;
     this._spaceTool = spaceTool;
     this._lassoTool = lassoTool;
+    this._extraPaletteEntries = extraPaletteEntries;
     palette.registerProvider(this);
 }
 
-const DiagramList: any = {};
-const diagramSubject: any = {};
-
-PaletteProvider["$inject"] = ['palette', 'create', 'elementFactory', 'spaceTool', 'lassoTool'];
+PaletteProvider["$inject"] = ['palette', 'create', 'elementFactory', 'spaceTool', 'lassoTool', 'extraPaletteEntries'];
 
 PaletteProvider.prototype.getPaletteEntries = function (element: any) {
     var self = this;
@@ -18,7 +16,11 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
         create = this._create,
         elementFactory = this._elementFactory,
         spaceTool = this._spaceTool,
-        lassoTool = this._lassoTool;
+        lassoTool = this._lassoTool,
+        extraPaletteEntries = this._extraPaletteEntries
+        ;
+
+    console.log('Palette-provider: extraPaletteEntries=', extraPaletteEntries);
 
 
     function createAction(type: string, group: string, className: string, title: string = null, options: any = {}) {
@@ -45,13 +47,15 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
         create.start(event, elementFactory.createParticipantShape(collapsed));
     }
 
+    Object.assign(actions, extraPaletteEntries);
+
     Object.assign(actions, {
         'save': {
             group: 'storage',
             className: ['fa-floppy-o', 'fa'],
             title: 'SAVE',
             action: {
-                click: () => console.log( 'Save')
+                click: () => console.log('Save')
             }
         },
         'export-svg': {
@@ -59,7 +63,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
             className: ['fa-print', 'fa'],
             title: 'EXPORT TO SVG',
             action: {
-                click: () => console.log( 'EXPORT TO SVG')
+                click: () => console.log('EXPORT TO SVG')
             }
         },
         'tool-separator-storage': {
@@ -72,7 +76,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
             className: ['fa-map-o', 'fa'],
             title: 'Zoom-To-Fit',
             action: {
-                click: () => console.log( 'Zoom-To-Fit')
+                click: () => console.log('Zoom-To-Fit')
             }
         },
         'view.reset-zoom': {
@@ -80,7 +84,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
             className: ['fa-binoculars', 'fa'],
             title: 'Reset Zoom',
             action: {
-                click: () => console.log( 'Reset Zoom')
+                click: () => console.log('Reset Zoom')
             }
         },
         'view.tool-separator-view': {
@@ -165,6 +169,9 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
             }
         }
     });
+
+    console.log('actions now: ', actions);
+
 
     return actions;
 };
