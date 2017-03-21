@@ -10,7 +10,7 @@ const propertiesPanelModule = require('bpmn-js-properties-panel');
 const propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/bpmn');
 
 import {CustomModdle} from './custom-moddle';
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 
 const customPaletteModule = {
     paletteProvider: ['type', PaletteProvider]
@@ -34,6 +34,7 @@ export class ModelerComponent implements OnInit {
     url: string;
     _urls: Link[];
     extraPaletteEntries: any;
+    commandQueue: Subject<any>;
 
     constructor(private http: Http, private store: BPMNStore) {
     }
@@ -49,6 +50,23 @@ export class ModelerComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.commandQueue = new Subject();
+
+        this.commandQueue
+            .subscribe( cmd => console.log( 'Received command: ', cmd));
+
+        this.commandQueue
+            .filter( cmd => 'extra' == cmd.action )
+            .subscribe( cmd => console.log( 'Received SUPER SPECIAL EXTRA command: ', cmd));
+
+
+        this.commandQueue
+            .filter( cmd => 'save' == cmd.action )
+            .do( cmd => console.log( 'Received SUPER SPECIAL SAVE command: ', cmd))
+            .subscribe( () => this.modeler.saveXML( (err:any, xml:any) => console.log( 'xml!?!', err, xml)))
+        ;
+
+
         this.store.listDiagrams()
             .do(links => this.urls = links)
             .do(() => console.log('Got links: ', this.urls))
@@ -56,6 +74,7 @@ export class ModelerComponent implements OnInit {
             .do(entries => this.extraPaletteEntries = entries)
             .do(() => console.log('Got entries: ', this.extraPaletteEntries))
             .subscribe(() => this.createModeler());
+
     }
 
     createModeler() {
@@ -67,6 +86,7 @@ export class ModelerComponent implements OnInit {
             },
             additionalModules: [
                 {'extraPaletteEntries': ['type', () => this.extraPaletteEntries]},
+                {'commandQueue': ['type', () => this.commandQueue]},
                 propertiesPanelModule,
                 propertiesProviderModule,
                 customPropertiesProviderModule,

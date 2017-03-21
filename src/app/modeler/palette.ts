@@ -1,13 +1,14 @@
-export function PaletteProvider(palette: any, create: any, elementFactory: any, spaceTool: any, lassoTool: any, extraPaletteEntries: any) {
+export function PaletteProvider(palette: any, create: any, elementFactory: any, spaceTool: any, lassoTool: any, extraPaletteEntries: any, commandQueue:any) {
     this._create = create;
     this._elementFactory = elementFactory;
     this._spaceTool = spaceTool;
     this._lassoTool = lassoTool;
     this._extraPaletteEntries = extraPaletteEntries;
+    this._commandQueue = commandQueue;
     palette.registerProvider(this);
 }
 
-PaletteProvider["$inject"] = ['palette', 'create', 'elementFactory', 'spaceTool', 'lassoTool', 'extraPaletteEntries'];
+PaletteProvider["$inject"] = ['palette', 'create', 'elementFactory', 'spaceTool', 'lassoTool', 'extraPaletteEntries', 'commandQueue'];
 
 PaletteProvider.prototype.getPaletteEntries = function (element: any) {
     var self = this;
@@ -17,7 +18,8 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
         elementFactory = this._elementFactory,
         spaceTool = this._spaceTool,
         lassoTool = this._lassoTool,
-        extraPaletteEntries = this._extraPaletteEntries
+        extraPaletteEntries = this._extraPaletteEntries,
+        commandQueue = this._commandQueue
         ;
 
     console.log('Palette-provider: extraPaletteEntries=', extraPaletteEntries);
@@ -47,6 +49,13 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
         create.start(event, elementFactory.createParticipantShape(collapsed));
     }
 
+    for( let entry in extraPaletteEntries) {
+        extraPaletteEntries[entry].action.click = () => {
+            console.log('Sending command: ', entry);
+            commandQueue.next({action: entry});
+        };
+    }
+
     Object.assign(actions, extraPaletteEntries);
 
     Object.assign(actions, {
@@ -55,7 +64,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element: any) {
             className: ['fa-floppy-o', 'fa'],
             title: 'SAVE',
             action: {
-                click: () => console.log('Save')
+                click: () => commandQueue.next({action: 'save'})
             }
         },
         'export-svg': {
